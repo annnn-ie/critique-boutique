@@ -227,7 +227,7 @@ const Index = () => {
                             newFlipped[index] = true;
                             return newFlipped;
                           });
-                        }, 200 * (index + 1));
+                        }, 100 * (index + 1));
                       });
                     }, totalRevealTime + 200); // Add 200ms buffer for smooth transition
                   }, 100);
@@ -276,7 +276,7 @@ const Index = () => {
                           newFlipped[index] = true;
                           return newFlipped;
                         });
-                      }, 200 * (index + 1));
+                      }, 100 * (index + 1));
                     });
                   }, totalRevealTime + 200); // Add 200ms buffer for smooth transition
                 }, 100);
@@ -653,7 +653,7 @@ const Index = () => {
                       <div className={`text-center mt-4 transition-all duration-500 ease-in-out ${
                         showParticipantNames ? 'opacity-100' : 'opacity-0'
                       }`}>
-                        <p className="text-neutral-50 text-sm font-medium">
+                        <p className="text-neutral-50 text-lg font-black">
                           {participantName}
                         </p>
                       </div>
