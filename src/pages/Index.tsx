@@ -506,7 +506,9 @@ const Index = () => {
               '/lovable-uploads/image-trail/image-2.svg',
               '/lovable-uploads/image-trail/image-3.svg',
               '/lovable-uploads/image-trail/image-4.svg',
-              '/lovable-uploads/image-trail/image-5.svg'
+              '/lovable-uploads/image-trail/image-5.svg',
+              '/lovable-uploads/image-trail/image-6.svg',
+              '/lovable-uploads/image-trail/image-7.svg'
             ]}
             variant={5}
           />
