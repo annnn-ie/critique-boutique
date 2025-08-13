@@ -4,96 +4,79 @@ import { Card } from '@/components/Card';
 import { CardData } from '@/types/CardData';
 import { X } from 'lucide-react';
 import VariableProximity from '@/components/VariableProximity';
+import ImageTrail from '@/components/ImageTrail';
 
 const cardData: CardData[] = [
   {
     id: 1,
     personality: {
-      title: "The User Advocate",
-      description: "Champions the end user in every decision and discussion. Brings real user insights and research to critique sessions. Challenges assumptions with user data and behavioral insights."
+      title: "The User Advocate"
     },
     toneOfVoice: {
-      title: "Research-Based & Passionate",
-      description: "Backs up points with user research and behavioral data. Speaks passionately about user needs and pain points. Uses personas and user scenarios to illustrate points."
+      title: "Research-Based & Passionate"
     },
     critique: {
-      title: "User Research Focus",
-      description: "Evaluates designs against user research findings and usability principles. Considers user mental models, interaction patterns, and accessibility needs. Prioritizes user satisfaction over aesthetic preferences."
+      title: "User Research Focus"
     }
   },
   {
     id: 2,
     personality: {
-      title: "The Business Thinker",
-      description: "Analytical and business-minded, always connecting design decisions to broader business goals and strategic objectives. Thinks systematically about problems and solutions with a focus on ROI and measurable outcomes."
+      title: "The Business Thinker"
     },
     toneOfVoice: {
-      title: "Strategic & Results-Oriented",
-      description: "Speaks in clear, structured sentences with logical flow. Uses metrics, KPIs, and business examples to support points. Asks probing questions about objectives, success criteria, and business impact."
+      title: "Strategic & Results-Oriented"
     },
     critique: {
-      title: "Business Impact Analysis",
-      description: "Evaluates how well the design serves business objectives and drives key metrics. Focuses on conversion rates, user engagement, revenue impact, and alignment with business strategy. Considers scalability and long-term business implications."
+      title: "Business Impact Analysis"
     }
   },
   {
     id: 3,
     personality: {
-      title: "The Craft Critic",
-      description: "Passionate about visual excellence and pushing creative boundaries. Brings deep expertise in design principles, typography, color theory, and visual hierarchy. Values craftsmanship and attention to detail."
+      title: "The Craft Critic"
     },
     toneOfVoice: {
-      title: "Artistically Discerning & Inspirational",
-      description: "Uses vivid design language and visual metaphors. References design principles, artistic movements, and aesthetic theory. Encourages bold creative choices while maintaining professional standards."
+      title: "Artistically Discerning & Inspirational"
     },
     critique: {
-      title: "Visual Excellence & Craft",
-      description: "Focuses on visual impact, typographic hierarchy, color harmony, and composition. Evaluates design consistency, brand expression, and aesthetic appeal. Pushes for innovative visual solutions while ensuring functional clarity."
+      title: "Visual Excellence & Craft"
     }
   },
   {
     id: 4,
     personality: {
-      title: "The Feasibility Friend",
-      description: "Technical expert who understands implementation constraints and development realities. Bridges the gap between design vision and technical execution. Values efficiency, performance, and maintainable solutions."
+      title: "The Feasibility Friend"
     },
     toneOfVoice: {
-      title: "Practical & Solution-Focused",
-      description: "Communicates with technical precision while remaining accessible. References development best practices, performance considerations, and implementation timelines. Offers alternative approaches when constraints arise."
+      title: "Practical & Solution-Focused"
     },
     critique: {
-      title: "Technical Implementation Reality",
-      description: "Evaluates feasibility, development complexity, and technical requirements. Considers performance implications, accessibility standards, browser compatibility, and maintenance overhead. Balances design ambition with practical constraints."
+      title: "Technical Implementation Reality"
     }
   },
   {
     id: 5,
     personality: {
-      title: "The Data Detective",
-      description: "Evidence-driven analyst who investigates design decisions through quantitative insights and user behavior data. Brings empirical rigor to design discussions and challenges assumptions with hard data."
+      title: "The Data Detective"
     },
     toneOfVoice: {
-      title: "Analytical & Evidence-Based",
-      description: "Supports arguments with concrete data, statistics, and user behavior insights. References A/B test results, analytics, and user research findings. Asks questions about measurement methodologies and success metrics."
+      title: "Analytical & Evidence-Based"
     },
     critique: {
-      title: "Data-Driven Optimization",
-      description: "Evaluates designs based on performance metrics, user behavior analytics, and conversion data. Focuses on measurable outcomes, statistical significance, and data-driven optimization opportunities. Considers testing strategies and KPI alignment."
+      title: "Data-Driven Optimization"
     }
   },
   {
     id: 6,
     personality: {
-      title: "The Brand Guardian",
-      description: "Protector of brand integrity and consistency across all touchpoints. Deep understanding of brand values, voice, and visual identity. Ensures every design decision reinforces brand positioning and messaging."
+      title: "The Brand Guardian"
     },
     toneOfVoice: {
-      title: "Brand-Conscious & Authoritative",
-      description: "Speaks with authority about brand standards and guidelines. Uses brand language consistently and references brand values as decision criteria. Maintains professional tone that reflects brand personality."
+      title: "Brand-Conscious & Authoritative"
     },
     critique: {
-      title: "Brand Consistency & Alignment",
-      description: "Evaluates how well designs represent and strengthen brand identity. Focuses on visual consistency, message alignment, and brand expression across touchpoints. Ensures design choices support brand positioning and values."
+      title: "Brand Consistency & Alignment"
     }
   }
 ];
@@ -472,7 +455,7 @@ const Index = () => {
                       }
                     }}
                     placeholder="e.g., Lorem, Ipsum, Dolor"
-                    className="w-80 px-4 py-3 text-neutral-50 placeholder-neutral-400 border-b border-neutral-50 focus:border-neutral-500 outline-none bg-transparent text-center text-lg transition-colors duration-200"
+                    className="w-80 px-4 py-3 text-neutral-50 placeholder-neutral-400 border-b border-neutral-500 outline-none bg-transparent text-center text-lg transition-colors duration-200"
                     autoFocus
                   />
                 </div>
@@ -483,16 +466,51 @@ const Index = () => {
         </div>
 
         {/* Bottom instruction text */}
-        <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center">
-          <p className="text-neutral-400 text-xs uppercase tracking-wide">
-            {showNamesInput 
-              ? "Write names separated by commas and hit ENTER ⤶"
-              : drawnCards.length > 0 && !selectedCard 
-                ? "Tap on a card to redraw a new one ⌘ + R to restart"
-                : "Drag Cards to Shuffle and tap on the deck to reveal"
-            }
-          </p>
+        <div className="absolute bottom-8 left-0 right-0 px-4">
+          <div className="relative h-6 flex items-center justify-center w-full">
+            {/* Text for names input state */}
+            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
+              showNamesInput 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-2 pointer-events-none'
+            }`}>
+              Write names separated by commas and hit ENTER ⤶
+            </p>
+            
+            {/* Text for drawn cards state */}
+            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
+              drawnCards.length > 0 && !selectedCard 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-2 pointer-events-none'
+            }`}>
+              Tap on a card to redraw a new one ⌘ + R to restart
+            </p>
+            
+            {/* Text for default shuffling state */}
+            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
+              !showNamesInput && drawnCards.length === 0 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-2 pointer-events-none'
+            }`}>
+              Drag Cards to Shuffle and tap on the deck to reveal
+            </p>
+          </div>
         </div>
+
+        {/* Image Trail Effect - Only show on shuffling screen (before cards are drawn) */}
+        {!showNamesInput && namesSubmitted && !isDragging && drawnCards.length === 0 && (
+          <ImageTrail 
+            items={[
+              '/lovable-uploads/image-trail/image.svg',
+              '/lovable-uploads/image-trail/image-1.svg',
+              '/lovable-uploads/image-trail/image-2.svg',
+              '/lovable-uploads/image-trail/image-3.svg',
+              '/lovable-uploads/image-trail/image-4.svg',
+              '/lovable-uploads/image-trail/image-5.svg'
+            ]}
+            variant={5}
+          />
+        )}
 
         {/* Card Stack - Positioned absolutely for better control */}
         <div className={`absolute inset-0 flex items-center justify-center z-50 ${(drawnCards.length > 0 && !selectedCard) || showNamesInput ? 'pointer-events-none' : ''}`}>
@@ -683,9 +701,6 @@ const Index = () => {
                     <h4 className="text-xl font-semibold text-neutral-600 mb-3">
                       {selectedCard.personality.title}
                     </h4>
-                    <p className="text-neutral-600 leading-relaxed">
-                      {selectedCard.personality.description}
-                    </p>
                   </div>
                 </div>
 
@@ -698,9 +713,6 @@ const Index = () => {
                     <h4 className="text-xl font-semibold text-neutral-600 mb-3">
                       {selectedCard.toneOfVoice.title}
                     </h4>
-                    <p className="text-neutral-600 leading-relaxed">
-                      {selectedCard.toneOfVoice.description}
-                    </p>
                   </div>
                 </div>
 
@@ -713,9 +725,6 @@ const Index = () => {
                     <h4 className="text-xl font-semibold text-neutral-600 mb-3">
                       {selectedCard.critique.title}
                     </h4>
-                    <p className="text-neutral-600 leading-relaxed">
-                      {selectedCard.critique.description}
-                    </p>
                   </div>
                 </div>
               </div>

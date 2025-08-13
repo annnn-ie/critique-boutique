@@ -1,7 +1,6 @@
 
 export interface CardSection {
   title: string;
-  description: string;
 }
 
 export interface CardData {
