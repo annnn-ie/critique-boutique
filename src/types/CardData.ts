@@ -5,7 +5,6 @@ export interface CardSection {
 
 export interface CardData {
   id: number;
-  personality: CardSection;
-  toneOfVoice: CardSection;
+  name: CardSection;
   critique: CardSection;
 }

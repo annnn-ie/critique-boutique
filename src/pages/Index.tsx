@@ -9,11 +9,8 @@ import ImageTrail from '@/components/ImageTrail';
 const cardData: CardData[] = [
   {
     id: 1,
-    personality: {
-      title: "The User Advocate"
-    },
-    toneOfVoice: {
-      title: "Research-Based & Passionate"
+    name: {
+      title: "UX Researcher"
     },
     critique: {
       title: "User Research Focus"
@@ -21,11 +18,8 @@ const cardData: CardData[] = [
   },
   {
     id: 2,
-    personality: {
-      title: "The Business Thinker"
-    },
-    toneOfVoice: {
-      title: "Strategic & Results-Oriented"
+    name: {
+      title: "Product Manager"
     },
     critique: {
       title: "Business Impact Analysis"
@@ -33,11 +27,8 @@ const cardData: CardData[] = [
   },
   {
     id: 3,
-    personality: {
-      title: "The Craft Critic"
-    },
-    toneOfVoice: {
-      title: "Artistically Discerning & Inspirational"
+    name: {
+      title: "Brand Designer"
     },
     critique: {
       title: "Visual Excellence & Craft"
@@ -45,11 +36,8 @@ const cardData: CardData[] = [
   },
   {
     id: 4,
-    personality: {
-      title: "The Feasibility Friend"
-    },
-    toneOfVoice: {
-      title: "Practical & Solution-Focused"
+    name: {
+      title: "Engineer"
     },
     critique: {
       title: "Technical Implementation Reality"
@@ -57,11 +45,8 @@ const cardData: CardData[] = [
   },
   {
     id: 5,
-    personality: {
-      title: "The Data Detective"
-    },
-    toneOfVoice: {
-      title: "Analytical & Evidence-Based"
+    name: {
+      title: "Content Strategist"
     },
     critique: {
       title: "Data-Driven Optimization"
@@ -69,14 +54,47 @@ const cardData: CardData[] = [
   },
   {
     id: 6,
-    personality: {
-      title: "The Brand Guardian"
-    },
-    toneOfVoice: {
-      title: "Brand-Conscious & Authoritative"
+    name: {
+      title: "Lead Designer"
     },
     critique: {
       title: "Brand Consistency & Alignment"
+    }
+  },
+  {
+    id: 7,
+    name: {
+      title: "Motion Designer"
+    },
+    critique: {
+      title: "Animation & Interaction Flow"
+    }
+  },
+  {
+    id: 8,
+    name: {
+      title: "Design System Advocate"
+    },
+    critique: {
+      title: "Design System & Scalability"
+    }
+  },
+  {
+    id: 9,
+    name: {
+      title: "Information Architect"
+    },
+    critique: {
+      title: "Information Hierarchy & Navigation"
+    }
+  },
+  {
+    id: 10,
+    name: {
+      title: "Accessibility Expert"
+    },
+    critique: {
+      title: "Accessibility & Usability"
     }
   }
 ];
@@ -255,25 +273,24 @@ const Index = () => {
                   setTimeout(() => {
                     setStartCardReveal(true);
                     
-                    // Wait for all cards to finish their reveal animation before starting to flip
-                    // Each card has 300ms delay, so total animation time is (cards.length - 1) * 300ms
-                    const totalRevealTime = (cards.length - 1) * 300;
-                    
-                    // Start flipping cards after reveal animation completes
-                    setTimeout(() => {
-                      // Show participant names exactly when cards start flipping
-                      setShowParticipantNames(true);
-                      
-                      cards.forEach((_, index) => {
-                        setTimeout(() => {
-                          setDrawnCardsFlipped(prev => {
-                            const newFlipped = [...prev];
-                            newFlipped[index] = true;
-                            return newFlipped;
-                          });
-                        }, 100 * (index + 1));
-                      });
-                    }, totalRevealTime + 200); // Add 200ms buffer for smooth transition
+                    // Start flipping cards much sooner - don't wait for all reveal animations
+                    // Start flipping cards immediately with a small stagger
+                    cards.forEach((_, index) => {
+                      setTimeout(() => {
+                        setDrawnCardsFlipped(prev => {
+                          const newFlipped = [...prev];
+                          newFlipped[index] = true;
+                          return newFlipped;
+                        });
+                        
+                        // Show participant names only after the last card has flipped
+                        if (index === cards.length - 1) {
+                          setTimeout(() => {
+                            setShowParticipantNames(true);
+                          }, 100); // Small delay after the last flip completes
+                        }
+                      }, 100 * (index + 1)); // Small stagger between flips
+                    });
                   }, 100);
                 }, 200);
               }, 600);
@@ -303,26 +320,24 @@ const Index = () => {
                 setTimeout(() => {
                   setStartCardReveal(true);
                   
-                  // Wait for all cards to finish their reveal animation before starting to flip
-                  // Each card has 300ms delay, so total animation time is (cards.length - 1) * 300ms
-                  const totalRevealTime = (cards.length - 1) * 300;
-                  
-                  // Start flipping cards after reveal animation completes
-                  setTimeout(() => {
-                    // Show participant names exactly when cards start flipping
-                    setShowParticipantNames(true);
-                    
-                    // Flip remaining cards one by one
-                    cards.forEach((_, index) => {
-                      setTimeout(() => {
-                        setDrawnCardsFlipped(prev => {
-                          const newFlipped = [...prev];
-                          newFlipped[index] = true;
-                          return newFlipped;
-                        });
-                      }, 100 * (index + 1));
-                    });
-                  }, totalRevealTime + 200); // Add 200ms buffer for smooth transition
+                  // Start flipping cards much sooner - don't wait for all reveal animations
+                  // Start flipping cards immediately with a small stagger
+                  cards.forEach((_, index) => {
+                    setTimeout(() => {
+                      setDrawnCardsFlipped(prev => {
+                        const newFlipped = [...prev];
+                        newFlipped[index] = true;
+                        return newFlipped;
+                      });
+                      
+                      // Show participant names only after the last card has flipped
+                      if (index === cards.length - 1) {
+                        setTimeout(() => {
+                          setShowParticipantNames(true);
+                        }, 100); // Small delay after the last flip completes
+                      }
+                    }, 100 * (index + 1)); // Small stagger between flips
+                  });
                 }, 100);
               }, 600);
             }
@@ -439,7 +454,7 @@ const Index = () => {
         newFlipped[index] = true;
         return newFlipped;
       });
-    }, 300);
+    }, 150);
   };
 
   const resetSelection = () => {
@@ -629,8 +644,8 @@ const Index = () => {
         {/* Card Stack - Positioned absolutely for better control */}
         <div className={`absolute inset-0 flex items-center justify-center z-50 ${(drawnCards.length > 0 && !selectedCard) || showNamesInput ? 'pointer-events-none' : ''}`}>
           {cards.length === 0 ? (
-            <div className={`text-neutral-50 text-center flex items-center justify-center h-full transition-all duration-500 ease-in-out ${
-              showEmptyState ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'
+            <div className={`text-neutral-50 text-center flex items-center justify-center h-full transition-all duration-300 ease-out ${
+              showEmptyState ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0.5'
             }`}>
               <p className="font-denton" style={{ fontSize: '24px', lineHeight: '1.0' }}>No more cards available</p>
             </div>
@@ -706,7 +721,7 @@ const Index = () => {
                 
                 // Calculate the starting position (from deck) and final position
                 const isAnimating = !startCardReveal;
-                const cardDelay = index * 300; // Stagger each card by 300ms
+                const cardDelay = index * 150; // Stagger each card by 150ms
                 const animationProgress = isAnimating ? 0 : 1;
                 
                 // Start position: center (where deck is at the top)
@@ -737,7 +752,7 @@ const Index = () => {
                       pointerEvents: 'auto',
                       zIndex: 100 + index, // Ensure each card has a unique z-index
                       transitionDelay: `${cardDelay}ms`,
-                      transition: 'all 700ms ease-out',
+                      transition: 'all 500ms ease-out',
                     }}
                   >
                     <div
@@ -782,26 +797,14 @@ const Index = () => {
             <div className="w-full max-w-4xl mx-auto transition-all duration-500 ease-in-out">
               {/* Content */}
               <div className="bg-neutral-50 rounded-2xl shadow-2xl p-8">
-                {/* Personality */}
+                {/* Name */}
                 <div className="grid md:grid-cols-3 gap-8 mb-12">
                   <div className="md:col-span-1">
-                    <h3 className="text-2xl font-bold text-neutral-800 mb-4">Personality</h3>
+                    <h3 className="text-2xl font-bold text-neutral-800 mb-4">Name</h3>
                   </div>
                   <div className="md:col-span-2">
                     <h4 className="text-xl font-semibold text-neutral-600 mb-3">
-                      {selectedCard.personality.title}
-                    </h4>
-                  </div>
-                </div>
-
-                {/* Tone of Voice */}
-                <div className="grid md:grid-cols-3 gap-8 mb-12">
-                  <div className="md:col-span-1">
-                    <h3 className="text-2xl font-bold text-neutral-800 mb-4">Tone of Voice</h3>
-                  </div>
-                  <div className="md:col-span-2">
-                    <h4 className="text-xl font-semibold text-neutral-600 mb-3">
-                      {selectedCard.toneOfVoice.title}
+                      {selectedCard.name.title}
                     </h4>
                   </div>
                 </div>

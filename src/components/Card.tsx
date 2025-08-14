@@ -13,12 +13,16 @@ interface CardProps {
 
 // Map card IDs to their corresponding front images using the new PNG files
 const cardFrontImages: Record<number, string> = {
-  1: '/lovable-uploads/ux-researcher.png', // User Advocate
-  2: '/lovable-uploads/product-manager.png', // Business Thinker
-  3: '/lovable-uploads/brand-designer.png', // Craft Critic
-  4: '/lovable-uploads/engineer.png', // Feasibility Friend
-  5: '/lovable-uploads/content-strategist.png', // Data Detective
-  6: '/lovable-uploads/lead-designer.png', // Brand Guardian
+  1: '/lovable-uploads/ux-researcher.png',
+  2: '/lovable-uploads/product-manager.png',
+  3: '/lovable-uploads/brand-designer.png',
+  4: '/lovable-uploads/engineer.png',
+  5: '/lovable-uploads/content-strategist.png',
+  6: '/lovable-uploads/lead-designer.png',
+  7: '/lovable-uploads/motion-designer.png',
+  8: '/lovable-uploads/design-system-advocate.png',
+  9: '/lovable-uploads/information-architect.png',
+  10: '/lovable-uploads/accessibility-expert.png',
 };
 
 export const Card: React.FC<CardProps> = ({ 
