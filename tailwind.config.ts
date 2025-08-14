@@ -22,6 +22,7 @@ export default {
 			fontFamily: {
 				'sans': ['Neue Haas Grotesk', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
 				'neue-haas': ['Neue Haas Grotesk', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+				'denton': ['Denton', 'serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
