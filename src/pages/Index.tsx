@@ -5,6 +5,7 @@ import { CardData } from '@/types/CardData';
 import { X } from 'lucide-react';
 import VariableProximity from '@/components/VariableProximity';
 import ImageTrail from '@/components/ImageTrail';
+import { Input } from '@heroui/react';
 
 const cardData: CardData[] = [
   {
@@ -122,6 +123,7 @@ const Index = () => {
   const [startCardReveal, setStartCardReveal] = useState(false);
   const [showParticipantNames, setShowParticipantNames] = useState(false);
   const [showInitialScreen, setShowInitialScreen] = useState(true); // New state for initial screen
+  const [showInstructions, setShowInstructions] = useState(false); // New state for instructions screen
   const [showEmptyState, setShowEmptyState] = useState(false); // State for empty state animation
   const dragThreshold = 10; // Reduced threshold for better responsiveness
   const containerRef = useRef<HTMLDivElement>(null);
@@ -151,6 +153,14 @@ const Index = () => {
         setShowInitialScreen(false);
         // Small delay to ensure the deck slides up smoothly
         setTimeout(() => {
+          setShowInstructions(true);
+        }, 100);
+      }
+      
+      if (showInstructions && e.key === 'Enter') {
+        setShowInstructions(false);
+        // Small delay to ensure the deck slides up smoothly
+        setTimeout(() => {
           setShowNamesInput(true);
         }, 100);
       }
@@ -170,6 +180,7 @@ const Index = () => {
          setStartCardReveal(false);
          setShowParticipantNames(false);
          setShowInitialScreen(true);
+         setShowInstructions(false);
          setShowNamesInput(false);
          setNames('');
          setNamesSubmitted(false);
@@ -181,20 +192,21 @@ const Index = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showInitialScreen]);
+  }, [showInitialScreen, showInstructions]);
 
   // Set deck position based on state
   React.useEffect(() => {
     // Deck should be at top when:
-    // 1. Names input is showing
-    // 2. Cards are being drawn
-    // 3. Cards have been drawn and are being revealed
-    if (showNamesInput || isDrawingCards || (drawnCards.length > 0 && !selectedCard)) {
+    // 1. Instructions screen is showing
+    // 2. Names input is showing
+    // 3. Cards are being drawn
+    // 4. Cards have been drawn and are being revealed
+    if (showInstructions || showNamesInput || isDrawingCards || (drawnCards.length > 0 && !selectedCard)) {
       setDeckPosition('top');
     } else {
       setDeckPosition('center');
     }
-  }, [showNamesInput, isDrawingCards, drawnCards.length, selectedCard]);
+  }, [showInstructions, showNamesInput, isDrawingCards, drawnCards.length, selectedCard]);
 
   // Handle empty state animation
   React.useEffect(() => {
@@ -403,6 +415,16 @@ const Index = () => {
       setShowInitialScreen(false);
       // Small delay to ensure the deck slides up smoothly
       setTimeout(() => {
+        setShowInstructions(true);
+      }, 100);
+      return;
+    }
+    
+    // If instructions screen is showing, handle click to transition
+    if (showInstructions) {
+      setShowInstructions(false);
+      // Small delay to ensure the deck slides up smoothly
+      setTimeout(() => {
         setShowNamesInput(true);
       }, 100);
       return;
@@ -473,6 +495,7 @@ const Index = () => {
       
       // Reset to initial screen
       setShowInitialScreen(true);
+      setShowInstructions(false);
       setShowNamesInput(false);
       setNames('');
       setNamesSubmitted(false);
@@ -503,16 +526,16 @@ const Index = () => {
       {/* Main Content */}
       <main className="relative z-10 min-h-screen" ref={containerRef}>
         {/* Title and Interactive Elements Container */}
-        <div className="absolute top-0 left-0 right-0 z-20" style={{ paddingTop: '340px' }}>
+        <div className="absolute top-0 left-0 right-0 z-20" style={{ paddingTop: '280px' }}>
           <div className="w-full max-w-4xl mx-auto text-center">
             {/* Title Section - Always render but control visibility with opacity */}
             <div className={`transition-all duration-1000 ease-in-out ${
-              showInitialScreen || showNamesInput ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2 pointer-events-none'
+              showInitialScreen || showInstructions || showNamesInput ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2 pointer-events-none'
             }`}>
               <div className="text-center mb-4 flex flex-col items-center">
                 <h1 className="font-black text-neutral-50 tracking-tight font-neue-haas" style={{ fontSize: '120px', lineHeight: '100%' }}>
                   <VariableProximity
-                    label="CRITIQUE BOUTIQUE"
+                    label={showInstructions ? "CRITIQUE BOUTIQUE" : "CRITIQUE BOUTIQUE"}
                     fromFontVariationSettings="'wght' 900"
                     toFontVariationSettings="'wght' 100"
                     containerRef={containerRef}
@@ -521,24 +544,49 @@ const Index = () => {
                     className="block"
                   />
                 </h1>
+                {/* Agenda subtitle for instructions screen */}
+                <div className={`transition-all duration-500 ease-in-out ${
+                  showInstructions ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+                }`} style={{ transitionDelay: showInstructions ? '200ms' : '0ms' }}>
+                  <p className="text-neutral-50 text-opacity-70 font-neue-haas mt-2" style={{ fontSize: '48px', lineHeight: '1.0', fontVariationSettings: "'wght' 100" }}>
+                    (AGENDA)
+                  </p>
+                </div>
               </div>
 
               {/* Subtitle container - positioned absolutely to not affect layout */}
-              <div className="relative h-16 flex justify-center">
+              <div className={`relative flex justify-center ${
+                showInstructions ? 'h-16' : 'h-0'
+              }`}>
                 {/* Initial screen subtitle */}
                 <div className={`absolute text-center transition-all duration-500 ease-in-out ${
                   showInitialScreen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
-                }`}>
+                }`} style={{ top: showInstructions ? '0' : '-56px' }}>
                   <p className="text-neutral-50 text-opacity-70 leading-relaxed font-denton" style={{ fontSize: '48px', lineHeight: '1.0' }}>
                     Feedback with style,<br />
                     purpose, and heart.
                   </p>
                 </div>
 
+                {/* Instructions screen subtitle */}
+                <div className={`absolute text-center transition-all duration-500 ease-in-out ${
+                  showInstructions ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+                }`} style={{ transitionDelay: showInstructions ? '100ms' : '0ms' }}>
+                  <div className="text-neutral-50 text-opacity-70 leading-relaxed font-denton" style={{ fontSize: '20px', lineHeight: '1.2' }}>
+                    <ul className="space-y-3 font-normal" style={{ fontSize: '24px' }}>
+                      <li>Kick-Off (Drawing the lenses)</li>
+                      <li>Presentation</li>
+                      <li>Design Critique</li>
+                      <li>Highlights and Takeaways</li>
+                      <li>Funny Time</li>
+                    </ul>
+                  </div>
+                </div>
+
                 {/* Names input subtitle */}
                 <div className={`absolute text-center transition-all duration-500 ease-in-out ${
                   showNamesInput ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
-                }`} style={{ transitionDelay: showNamesInput ? '100ms' : '0ms' }}>
+                }`} style={{ transitionDelay: showNamesInput ? '100ms' : '0ms', top: showInstructions ? '0' : '-56px' }}>
                   <p className="text-neutral-50 text-opacity-70 max-w-xs leading-relaxed font-normal" style={{ fontSize: '20px' }}>
                     Who will be participating this session?
                   </p>
@@ -551,18 +599,26 @@ const Index = () => {
               showNamesInput ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
             }`} style={{ transitionDelay: showNamesInput ? '300ms' : '0ms' }}>
               <div className="relative mb-4 flex justify-center">
-                <input
+                <Input
                   type="text"
                   value={names}
-                  onChange={(e) => setNames(e.target.value)}
+                  onValueChange={setNames}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && names.trim()) {
                       handleNamesSubmit();
                     }
                   }}
                   placeholder="e.g., Lorem, Ipsum, Dolor"
-                  className="w-80 px-4 py-3 text-neutral-50 placeholder-neutral-400 border-b border-neutral-500 outline-none bg-transparent text-center text-lg transition-colors duration-200"
+                  variant="underlined"
+                  size="lg"
+                  className="w-80"
                   autoFocus={showNamesInput}
+                  classNames={{
+                    input: "text-center text-lg text-neutral-50 placeholder:text-neutral-400",
+                    inputWrapper: "bg-transparent",
+                    innerWrapper: "bg-transparent",
+                    base: "bg-transparent"
+                  }}
                 />
               </div>
             </div>
@@ -579,6 +635,15 @@ const Index = () => {
                 : 'opacity-0 translate-y-2 pointer-events-none'
             }`}>
               ENTER ↵ TO START
+            </p>
+            
+            {/* Text for instructions screen */}
+            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
+              showInstructions 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-2 pointer-events-none'
+            }`} style={{ transitionDelay: showInstructions ? '600ms' : '0ms' }}>
+              ENTER ↵
             </p>
             
             {/* Text for names input state */}
@@ -610,7 +675,7 @@ const Index = () => {
             
             {/* Text for default shuffling state */}
             <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
-              !showInitialScreen && !showNamesInput && drawnCards.length === 0 
+              !showInitialScreen && !showInstructions && !showNamesInput && drawnCards.length === 0 
                 ? 'opacity-100 translate-y-0' 
                 : 'opacity-0 translate-y-2 pointer-events-none'
             }`}>
@@ -620,7 +685,7 @@ const Index = () => {
         </div>
 
         {/* Image Trail Effect - Show on initial screen and shuffling screen (before cards are drawn) */}
-        {(showInitialScreen || (!showNamesInput && namesSubmitted && !isDragging && drawnCards.length === 0)) && (
+        {(showInitialScreen || (!showInstructions && !showNamesInput && namesSubmitted && !isDragging && drawnCards.length === 0)) && (
           <ImageTrail 
             items={[
               '/lovable-uploads/image-trail/image-1.svg',
@@ -642,17 +707,11 @@ const Index = () => {
         )}
 
         {/* Card Stack - Positioned absolutely for better control */}
-        <div className={`absolute inset-0 flex items-center justify-center z-50 ${(drawnCards.length > 0 && !selectedCard) || showNamesInput ? 'pointer-events-none' : ''}`}>
-          {cards.length === 0 ? (
-            <div className={`text-neutral-50 text-center flex items-center justify-center h-full transition-all duration-300 ease-out ${
-              showEmptyState ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0.5'
-            }`}>
-              <p className="font-denton" style={{ fontSize: '24px', lineHeight: '1.0' }}>No more cards available</p>
-            </div>
-          ) : (
+        {cards.length > 0 && (
+          <div className={`absolute inset-0 flex items-center justify-center z-50 ${(drawnCards.length > 0 && !selectedCard) || showInstructions || showNamesInput ? 'pointer-events-none' : ''}`}>
             <div 
               className={`relative w-48 h-72 transition-transform duration-700 ease-in-out ${
-                showInitialScreen ? '-translate-y-[100vh]' : deckPosition === 'top' ? '-translate-y-[380px]' : 'translate-y-0'
+                showInitialScreen || showInstructions ? '-translate-y-[100vh]' : showNamesInput ? '-translate-y-[420px]' : deckPosition === 'top' ? '-translate-y-[320px]' : 'translate-y-0'
               }`}
             >
               <>
@@ -706,14 +765,22 @@ const Index = () => {
                 })}
               </>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Drawn Cards Section - Show when cards have been drawn and deck is not empty */}
-        {drawnCards.length > 0 && !selectedCard && showDrawnCards && cards.length > 0 && (
+        {/* Drawn Cards Section - Show when cards have been drawn */}
+        {drawnCards.length > 0 && !selectedCard && showDrawnCards && (
           <div className={`absolute inset-0 flex flex-col items-center justify-center z-30 transition-all duration-1000 ease-in-out ${
             isDrawingCards ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'
           }`} style={{ paddingTop: '100px', pointerEvents: 'auto' }}>
+            {/* Empty state message - positioned absolutely to avoid layout shifts */}
+            {cards.length === 0 && (
+              <div className={`absolute top-56 left-1/2 transform -translate-x-1/2 text-neutral-50 text-center transition-all duration-300 ease-out ${
+                showEmptyState ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0.5'
+              }`}>
+                <p className="font-denton" style={{ fontSize: '24px', lineHeight: '1.0' }}>No more cards available</p>
+              </div>
+            )}
             <div className="relative mb-8" style={{ width: '100%', height: '200px', pointerEvents: 'auto' }}>
               {drawnCards.map((card, index) => {
                 const namesArray = names.split(',').map(name => name.trim()).filter(name => name.length > 0);
@@ -725,7 +792,7 @@ const Index = () => {
                 const animationProgress = isAnimating ? 0 : 1;
                 
                 // Start position: center (where deck is at the top)
-                const startY = -524; // Start at the exact top edge of the card stack (deck's -380px + half card height)
+                const startY = -464; // Start at the exact top edge of the card stack (deck's -320px + half card height)
                 const startX = 0; // All cards start at center (deck position)
                 const startScale = 1; // Start at normal size (no scaling)
                 const startRotation = 0; // Start with no rotation
