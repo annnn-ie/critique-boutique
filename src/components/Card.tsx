@@ -79,9 +79,10 @@ export const Card: React.FC<CardProps> = ({
       >
         {/* Card Back */}
         <div 
-          className="absolute inset-0 w-full h-full rounded-lg shadow-xl backface-hidden bg-neutral-50 p-2"
+          className="absolute inset-0 w-full h-full rounded-lg shadow-xl backface-hidden bg-neutral-50"
           style={{
             backfaceVisibility: 'hidden',
+            padding: '1px',
           }}
         >
           <div 
@@ -96,10 +97,11 @@ export const Card: React.FC<CardProps> = ({
 
         {/* Card Front */}
         <div 
-          className="absolute inset-0 w-full h-full bg-neutral-50 rounded-lg shadow-xl backface-hidden p-2"
+          className="absolute inset-0 w-full h-full bg-neutral-50 rounded-lg shadow-xl backface-hidden"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
+            padding: '1px',
           }}
         >
           <div 

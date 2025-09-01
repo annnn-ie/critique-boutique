@@ -79,13 +79,14 @@ export const HeroUICardComponent: React.FC<HeroUICardProps> = ({
       >
         {/* Card Back */}
         <div 
-          className="absolute inset-0 w-full h-full rounded-2xl shadow-xl backface-hidden bg-neutral-50 p-2"
+          className="absolute inset-0 w-full h-full rounded-lg shadow-xl backface-hidden bg-neutral-50"
           style={{
             backfaceVisibility: 'hidden',
+            padding: '1px',
           }}
         >
           <div 
-            className="w-full h-full rounded-xl"
+            className="w-full h-full rounded-md"
             style={{
               backgroundImage: 'url(/lovable-uploads/card-back.png)',
               backgroundSize: 'cover',
@@ -96,14 +97,15 @@ export const HeroUICardComponent: React.FC<HeroUICardProps> = ({
 
         {/* Card Front */}
         <div 
-          className="absolute inset-0 w-full h-full bg-neutral-50 rounded-2xl shadow-xl backface-hidden p-2"
+          className="absolute inset-0 w-full h-full bg-neutral-50 rounded-lg shadow-xl backface-hidden"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
+            padding: '1px',
           }}
         >
           <div 
-            className="w-full h-full rounded-xl"
+            className="w-full h-full rounded-md"
             style={{
               backgroundImage: `url(${cardFrontImages[data.id]})`,
               backgroundSize: 'cover',
