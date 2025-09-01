@@ -849,11 +849,12 @@ const Index = () => {
         {cards.length > 0 && !showAgenda && (
           <div className={`absolute inset-0 flex items-center justify-center z-50 ${(drawnCards.length > 0 && !selectedCard) || showNamesInput ? 'pointer-events-none' : ''}`}>
             <div 
-              className={`relative w-48 h-72 transition-transform duration-700 ease-in-out ${
+              className={`relative transition-transform duration-700 ease-in-out ${
                 showInitialScreen || showAgenda ? '-translate-y-[100vh]' : 
                 shouldDeckSlideFromTop ? '-translate-y-[100vh]' :
                 deckPosition === 'top' ? '-translate-y-[380px]' : 'translate-y-0'
               }`}
+              style={{ width: '180px', height: '256px' }}
             >
               <>
                 {/* Stack Cards */}
@@ -933,14 +934,14 @@ const Index = () => {
                 const animationProgress = isAnimating ? 0 : 1;
                 
                 // Start position: center (where deck is at the top)
-                const startY = -524; // Start at the exact top edge of the card stack (deck's -380px + half card height)
+                const startY = -508; // Start at the exact top edge of the card stack (deck's -380px + half card height: 256/2 = 128)
                 const startX = 0; // All cards start at center (deck position)
                 const startScale = 1; // Start at normal size (no scaling)
                 const startRotation = 0; // Start with no rotation
                 
                 // Final position: spread out horizontally from center, at display level
                 const finalY = 0; // Final display position
-                const finalX = (index - (drawnCards.length - 1) / 2) * 260; // Spread horizontally with 260px gaps
+                const finalX = (index - (drawnCards.length - 1) / 2) * 220; // Spread horizontally with 220px gaps (adjusted for new card width)
                 const finalScale = 1; // End at normal size (no scaling)
                 const finalRotation = 0;
                 

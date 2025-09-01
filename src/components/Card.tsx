@@ -50,7 +50,7 @@ export const Card: React.FC<CardProps> = ({
     <div className="relative perspective-1000" style={{ zIndex: 1 }}>
       <div
         className={`
-          relative w-48 h-72 transition-all duration-1000 cursor-pointer
+          relative transition-all duration-1000 cursor-pointer
           ${isFlipped ? 'transform-style-preserve-3d rotate-y-180' : 'transform-style-preserve-3d'}
           ${!disabled && !isStacked ? 'hover:scale-105 hover:-translate-y-2 hover:shadow-2xl' : ''}
           ${disabled && !isDragging ? 'cursor-not-allowed' : ''}
@@ -58,6 +58,8 @@ export const Card: React.FC<CardProps> = ({
         `}
         onClick={handleClick}
         style={{
+          width: '180px',
+          height: '256px',
           transformStyle: 'preserve-3d',
           transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
           transition: 'transform 1000ms cubic-bezier(0.4, 0.0, 0.2, 1)',
