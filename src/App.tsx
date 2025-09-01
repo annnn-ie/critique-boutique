@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HeroUIProvider } from "@heroui/react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import { HeroUIExample } from "./components/HeroUIExample";
 
 const queryClient = new QueryClient();
 
@@ -18,12 +17,11 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-                      <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/heroui-demo" element={<HeroUIExample />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </HeroUIProvider>

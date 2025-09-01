@@ -233,4 +233,146 @@
     display: flex;
     justify-content: center;
   }
+  
+  /* Prevent scaling on specific elements */
+  .no-scale-transform {
+    transform: none !important;
+    scale: 1 !important;
+  }
+  
+  /* Custom opacity animation without transforms */
+  .animate-opacity-in {
+    animation: opacityIn 700ms ease-out forwards;
+  }
+  
+  @keyframes opacityIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer utilities {
+  /* Animation utilities for enter and exit animations */
+  
+  /* Enter animations */
+  .animate-in {
+    animation-fill-mode: both;
+  }
+  
+  .slide-in-from-top-4 {
+    animation-name: slideInFromTop4;
+  }
+  
+  .slide-in-from-bottom-4 {
+    animation-name: slideInFromBottom4;
+  }
+  
+  .fade-in {
+    animation-name: fadeIn;
+  }
+  
+  /* Exit animations */
+  .animate-out {
+    animation-fill-mode: both;
+  }
+  
+  .slide-out-to-top-4 {
+    animation-name: slideOutToTop4;
+  }
+  
+  .slide-out-to-bottom-4 {
+    animation-name: slideOutToBottom4;
+  }
+  
+  .fade-out {
+    animation-name: fadeOut;
+  }
+  
+  /* Duration utilities */
+  .duration-300 {
+    animation-duration: 300ms;
+  }
+  
+  .duration-500 {
+    animation-duration: 500ms;
+  }
+  
+  .duration-700 {
+    animation-duration: 700ms;
+  }
+  
+  /* Easing utilities */
+  .ease-in {
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  }
+  
+  .ease-out {
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+@keyframes slideInFromTop4 {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom4 {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToTop4 {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+}
+
+@keyframes slideOutToBottom4 {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

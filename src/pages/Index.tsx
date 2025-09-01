@@ -5,7 +5,6 @@ import { CardData } from '@/types/CardData';
 import { X } from 'lucide-react';
 import VariableProximity from '@/components/VariableProximity';
 import ImageTrail from '@/components/ImageTrail';
-import { Input } from '@heroui/react';
 
 const cardData: CardData[] = [
   {
@@ -123,8 +122,19 @@ const Index = () => {
   const [startCardReveal, setStartCardReveal] = useState(false);
   const [showParticipantNames, setShowParticipantNames] = useState(false);
   const [showInitialScreen, setShowInitialScreen] = useState(true); // New state for initial screen
-  const [showInstructions, setShowInstructions] = useState(false); // New state for instructions screen
+  const [showAgenda, setShowAgenda] = useState(false); // New state for agenda screen
   const [showEmptyState, setShowEmptyState] = useState(false); // State for empty state animation
+  const [shouldDeckSlideFromTop, setShouldDeckSlideFromTop] = useState(false);
+  
+  // Animation states for text elements
+  const [titleAnimationState, setTitleAnimationState] = useState<'enter' | 'exit' | 'idle'>('enter');
+  const [subtitleAnimationState, setSubtitleAnimationState] = useState<'enter' | 'exit' | 'idle'>('enter');
+  const [footerAnimationState, setFooterAnimationState] = useState<'enter' | 'exit' | 'idle'>('enter');
+  const [namesInputAnimationState, setNamesInputAnimationState] = useState<'enter' | 'exit' | 'idle'>('idle');
+  
+  // Initial page load animation state
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  
   const dragThreshold = 10; // Reduced threshold for better responsiveness
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -146,23 +156,67 @@ const Index = () => {
     setCardPositions(generateRandomPositions());
   }, []);
 
+  // Handle initial page load animations
+  React.useEffect(() => {
+    if (isInitialLoad) {
+      // Start with all elements invisible
+      setTitleAnimationState('idle');
+      setSubtitleAnimationState('idle');
+      setFooterAnimationState('idle');
+      
+      // Stagger the fade-in animations
+      setTimeout(() => {
+        setTitleAnimationState('enter');
+      }, 100);
+      
+      setTimeout(() => {
+        setSubtitleAnimationState('enter');
+      }, 300);
+      
+      setTimeout(() => {
+        setFooterAnimationState('enter');
+      }, 500);
+      
+      // Mark initial load as complete
+      setTimeout(() => {
+        setIsInitialLoad(false);
+      }, 800);
+    }
+  }, [isInitialLoad]);
+
   // Handle keyboard shortcuts
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (showInitialScreen && e.key === 'Enter') {
-        setShowInitialScreen(false);
-        // Small delay to ensure the deck slides up smoothly
+        // Animate out initial screen
+        setTitleAnimationState('exit');
+        setSubtitleAnimationState('exit');
+        setFooterAnimationState('exit');
+        
         setTimeout(() => {
-          setShowInstructions(true);
-        }, 100);
-      }
-      
-      if (showInstructions && e.key === 'Enter') {
-        setShowInstructions(false);
-        // Small delay to ensure the deck slides up smoothly
+          setShowInitialScreen(false);
+          setShowAgenda(true);
+          // Animate in agenda screen
+          setTitleAnimationState('enter');
+          setSubtitleAnimationState('enter');
+          setFooterAnimationState('enter');
+        }, 500);
+      } else if (showAgenda && e.key === 'Enter') {
+        // Animate out agenda screen
+        setTitleAnimationState('exit');
+        setSubtitleAnimationState('exit');
+        setFooterAnimationState('exit');
+        
         setTimeout(() => {
+          setShowAgenda(false);
+          setShouldDeckSlideFromTop(true);
           setShowNamesInput(true);
-        }, 100);
+          // Animate in names input screen
+          setTitleAnimationState('enter');
+          setSubtitleAnimationState('enter');
+          setNamesInputAnimationState('enter');
+          setFooterAnimationState('enter');
+        }, 500);
       }
       
              // Handle ⌘ + R (Cmd + R) restart shortcut
@@ -180,11 +234,20 @@ const Index = () => {
          setStartCardReveal(false);
          setShowParticipantNames(false);
          setShowInitialScreen(true);
-         setShowInstructions(false);
+         setShowAgenda(false);
          setShowNamesInput(false);
          setNames('');
          setNamesSubmitted(false);
          setShowEmptyState(false);
+         
+         // Reset animation states
+         setTitleAnimationState('enter');
+         setSubtitleAnimationState('enter');
+         setFooterAnimationState('enter');
+         setNamesInputAnimationState('idle');
+         
+         // Reset initial load state to trigger fade-in animations
+         setIsInitialLoad(true);
        }
     };
 
@@ -192,21 +255,30 @@ const Index = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showInitialScreen, showInstructions]);
+  }, [showInitialScreen, showAgenda]);
 
   // Set deck position based on state
   React.useEffect(() => {
     // Deck should be at top when:
-    // 1. Instructions screen is showing
-    // 2. Names input is showing
-    // 3. Cards are being drawn
-    // 4. Cards have been drawn and are being revealed
-    if (showInstructions || showNamesInput || isDrawingCards || (drawnCards.length > 0 && !selectedCard)) {
+    // 1. Names input is showing
+    // 2. Cards are being drawn
+    // 3. Cards have been drawn and are being revealed
+    if (showNamesInput || isDrawingCards || (drawnCards.length > 0 && !selectedCard)) {
       setDeckPosition('top');
     } else {
       setDeckPosition('center');
     }
-  }, [showInstructions, showNamesInput, isDrawingCards, drawnCards.length, selectedCard]);
+  }, [showNamesInput, isDrawingCards, drawnCards.length, selectedCard]);
+
+  // Reset deck slide flag after animation completes
+  React.useEffect(() => {
+    if (shouldDeckSlideFromTop && deckPosition === 'top') {
+      const timer = setTimeout(() => {
+        setShouldDeckSlideFromTop(false);
+      }, 700); // Match the transition duration
+      return () => clearTimeout(timer);
+    }
+  }, [shouldDeckSlideFromTop, deckPosition]);
 
   // Handle empty state animation
   React.useEffect(() => {
@@ -244,12 +316,14 @@ const Index = () => {
               if (!isDragging) {
           // This was a click/tap
           if (showInitialScreen) {
-            // Initial screen is active - transition to names input
+            // Initial screen is active - transition to agenda
             setShowInitialScreen(false);
-            // Small delay to ensure the deck slides up smoothly
-            setTimeout(() => {
-              setShowNamesInput(true);
-            }, 100);
+            setShowAgenda(true);
+            return;
+          } else if (showAgenda) {
+            // Agenda screen is active - transition to names input
+            setShowAgenda(false);
+            setShowNamesInput(true);
             return;
           } else if (showNamesInput) {
             // Names input is active - do nothing on tap
@@ -412,21 +486,19 @@ const Index = () => {
     
     // If initial screen is showing, handle click to transition
     if (showInitialScreen) {
-      setShowInitialScreen(false);
-      // Small delay to ensure the deck slides up smoothly
+      // Animate out initial screen
+      setTitleAnimationState('exit');
+      setSubtitleAnimationState('exit');
+      setFooterAnimationState('exit');
+      
       setTimeout(() => {
-        setShowInstructions(true);
-      }, 100);
-      return;
-    }
-    
-    // If instructions screen is showing, handle click to transition
-    if (showInstructions) {
-      setShowInstructions(false);
-      // Small delay to ensure the deck slides up smoothly
-      setTimeout(() => {
-        setShowNamesInput(true);
-      }, 100);
+        setShowInitialScreen(false);
+        setShowAgenda(true);
+        // Animate in agenda screen
+        setTitleAnimationState('enter');
+        setSubtitleAnimationState('enter');
+        setFooterAnimationState('enter');
+      }, 500);
       return;
     }
     
@@ -495,7 +567,6 @@ const Index = () => {
       
       // Reset to initial screen
       setShowInitialScreen(true);
-      setShowInstructions(false);
       setShowNamesInput(false);
       setNames('');
       setNamesSubmitted(false);
@@ -503,6 +574,15 @@ const Index = () => {
       // Start transition back to center
       setIsDeckTransitioning(true);
       setDeckPosition('center');
+      
+      // Reset animation states
+      setTitleAnimationState('enter');
+      setSubtitleAnimationState('enter');
+      setFooterAnimationState('enter');
+      setNamesInputAnimationState('idle');
+      
+      // Reset initial load state to trigger fade-in animations
+      setIsInitialLoad(true);
       
       // Reset deck transition flag after animation
       setTimeout(() => {
@@ -513,29 +593,102 @@ const Index = () => {
 
   const handleNamesSubmit = () => {
     if (names.trim()) {
-      setShowNamesInput(false);
-      setNamesSubmitted(true);
-      // The actual card drawing will happen on the next deck tap
+      // Animate out names input
+      setTitleAnimationState('exit');
+      setSubtitleAnimationState('exit');
+      setNamesInputAnimationState('exit');
+      setFooterAnimationState('exit');
+      
+      setTimeout(() => {
+        setShowNamesInput(false);
+        setNamesSubmitted(true);
+        // Reset footer animation state to 'enter' for shuffling screen
+        setFooterAnimationState('enter');
+        // The actual card drawing will happen on the next deck tap
+      }, 500);
     }
   };
 
   const rotation = dragOffset.x * 0.1;
+
+  // Animation classes for text elements
+  const getTitleAnimationClass = () => {
+    if (isInitialLoad && titleAnimationState === 'idle') {
+      return 'opacity-0';
+    } else if (titleAnimationState === 'enter') {
+      // For agenda screen, use a custom animation without any transforms
+      if (showAgenda) {
+        return 'opacity-0 animate-opacity-in';
+      }
+      return 'animate-in fade-in duration-700 ease-out';
+    } else if (titleAnimationState === 'exit') {
+      return 'animate-out slide-out-to-top-4 duration-500 ease-in';
+    }
+    return '';
+  };
+
+  const getSubtitleAnimationClass = () => {
+    if (isInitialLoad && subtitleAnimationState === 'idle') {
+      return 'opacity-0';
+    } else if (subtitleAnimationState === 'enter') {
+      return 'animate-in fade-in duration-700 ease-out';
+    } else if (subtitleAnimationState === 'exit') {
+      return 'animate-out slide-out-to-bottom-4 duration-500 ease-in';
+    }
+    return '';
+  };
+
+  const getFooterAnimationClass = () => {
+    if (isInitialLoad && footerAnimationState === 'idle') {
+      return 'opacity-0';
+    } else if (footerAnimationState === 'enter') {
+      return 'animate-in fade-in duration-500 ease-out';
+    } else if (footerAnimationState === 'exit') {
+      return 'animate-out fade-out duration-300 ease-in';
+    }
+    return '';
+  };
+
+  const getNamesInputAnimationClass = () => {
+    if (namesInputAnimationState === 'enter') {
+      return 'animate-in slide-in-from-bottom-4 duration-500 ease-out';
+    } else if (namesInputAnimationState === 'exit') {
+      return 'animate-out slide-out-to-bottom-4 duration-300 ease-in';
+    }
+    return '';
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-neutral-950">
       {/* Main Content */}
       <main className="relative z-10 min-h-screen" ref={containerRef}>
         {/* Title and Interactive Elements Container */}
-        <div className="absolute top-0 left-0 right-0 z-20" style={{ paddingTop: '280px' }}>
+        <div className="absolute top-0 left-0 right-0 z-20" style={{ 
+          paddingTop: showInitialScreen ? '348px' : '388px'
+        }}>
           <div className="w-full max-w-4xl mx-auto text-center">
-            {/* Title Section - Always render but control visibility with opacity */}
-            <div className={`transition-all duration-1000 ease-in-out ${
-              showInitialScreen || showInstructions || showNamesInput ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2 pointer-events-none'
-            }`}>
-              <div className="text-center mb-4 flex flex-col items-center">
-                <h1 className="font-black text-neutral-50 tracking-tight font-neue-haas" style={{ fontSize: '120px', lineHeight: '100%' }}>
+            {/* Title Section */}
+            <div className="transition-all duration-1000 ease-in-out" style={{ height: '80px' }}>
+              <h1 className={`font-black text-neutral-50 tracking-tight font-neue-haas ${getTitleAnimationClass()} ${showAgenda ? 'no-scale-transform' : ''}`} style={{ 
+                fontSize: showAgenda ? '80px' : showNamesInput ? '80px' : showInitialScreen ? '120px' : '0px', 
+                lineHeight: '0',
+                letterSpacing: showAgenda ? '-0.8px' : showNamesInput ? '-0.8px' : '0px',
+                marginBottom: showInitialScreen ? '10px' : '60px',
+                opacity: showInitialScreen || showAgenda || showNamesInput ? '1' : '0'
+              }}>
+                {showAgenda ? (
+                  <span>
+                    <span className="font-light">THE </span>
+                    <span className="font-black">SESSION</span>
+                  </span>
+                ) : showNamesInput ? (
+                  <span>
+                    <span className="font-light">THE </span>
+                    <span className="font-black">LENSES</span>
+                  </span>
+                ) : showInitialScreen ? (
                   <VariableProximity
-                    label={showInstructions ? "CRITIQUE BOUTIQUE" : "CRITIQUE BOUTIQUE"}
+                    label="CRITIQUE BOUTIQUE"
                     fromFontVariationSettings="'wght' 900"
                     toFontVariationSettings="'wght' 100"
                     containerRef={containerRef}
@@ -543,83 +696,79 @@ const Index = () => {
                     falloff="gaussian"
                     className="block"
                   />
-                </h1>
-                {/* Agenda subtitle for instructions screen */}
-                <div className={`transition-all duration-500 ease-in-out ${
-                  showInstructions ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
-                }`} style={{ transitionDelay: showInstructions ? '200ms' : '0ms' }}>
-                  <p className="text-neutral-50 text-opacity-70 font-neue-haas mt-2" style={{ fontSize: '48px', lineHeight: '1.0', fontVariationSettings: "'wght' 100" }}>
-                    (AGENDA)
-                  </p>
-                </div>
-              </div>
+                ) : null}
+              </h1>
 
-              {/* Subtitle container - positioned absolutely to not affect layout */}
-              <div className={`relative flex justify-center ${
-                showInstructions ? 'h-16' : 'h-0'
-              }`}>
+              {/* Subtitle Section */}
+              <div className={`transition-all duration-700 ease-in-out ${getSubtitleAnimationClass()}`}>
                 {/* Initial screen subtitle */}
-                <div className={`absolute text-center transition-all duration-500 ease-in-out ${
-                  showInitialScreen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
-                }`} style={{ top: showInstructions ? '0' : '-56px' }}>
-                  <p className="text-neutral-50 text-opacity-70 leading-relaxed font-denton" style={{ fontSize: '48px', lineHeight: '1.0' }}>
+                {showInitialScreen && (
+                  <p className="text-neutral-50 text-opacity-70 font-denton" style={{ 
+                    fontSize: '40px', 
+                    lineHeight: '1.4', 
+                    letterSpacing: '0.4px',
+                    fontWeight: '100'
+                  }}>
                     Feedback with style,<br />
                     purpose, and heart.
                   </p>
-                </div>
+                )}
 
-                {/* Instructions screen subtitle */}
-                <div className={`absolute text-center transition-all duration-500 ease-in-out ${
-                  showInstructions ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
-                }`} style={{ transitionDelay: showInstructions ? '100ms' : '0ms' }}>
-                  <div className="text-neutral-50 text-opacity-70 leading-relaxed font-denton" style={{ fontSize: '20px', lineHeight: '1.2' }}>
-                    <ul className="space-y-3 font-normal" style={{ fontSize: '24px' }}>
-                      <li>Kick-Off (Drawing the lenses)</li>
-                      <li>Presentation</li>
-                      <li>Design Critique</li>
-                      <li>Highlights and Takeaways</li>
-                      <li>Funny Time</li>
-                    </ul>
+                {/* Agenda screen agenda */}
+                {showAgenda && (
+                  <div className="text-neutral-50 text-opacity-70 font-denton" style={{ 
+                    fontSize: '40px', 
+                    lineHeight: '1.4', 
+                    letterSpacing: '0.4px',
+                    fontWeight: '100'
+                  }}>
+                    <p className="mb-0">Kick-Off (Drawing the lenses)</p>
+                    <p className="mb-0">Presentation</p>
+                    <p className="mb-0">Design Critique</p>
+                    <p className="mb-0">Highlights and Takeaways</p>
+                    <p className="mb-0">Funny Time</p>
                   </div>
-                </div>
+                )}
 
                 {/* Names input subtitle */}
-                <div className={`absolute text-center transition-all duration-500 ease-in-out ${
-                  showNamesInput ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
-                }`} style={{ transitionDelay: showNamesInput ? '100ms' : '0ms', top: showInstructions ? '0' : '-56px' }}>
-                  <p className="text-neutral-50 text-opacity-70 max-w-xs leading-relaxed font-normal" style={{ fontSize: '20px' }}>
-                    Who will be participating this session?
+                {showNamesInput && (
+                  <p className="text-neutral-50 text-opacity-70 font-denton" style={{ 
+                    fontSize: '40px', 
+                    lineHeight: '1.4', 
+                    letterSpacing: '0.4px',
+                    fontWeight: '100'
+                  }}>
+                    Who will be participating<br />
+                    in the session?
                   </p>
-                </div>
+                )}
               </div>
-            </div>
 
-            {/* Names Input Field - Show when names input is active */}
-            <div className={`text-center w-full max-w-4xl mx-auto transition-all duration-500 ease-in-out ${
-              showNamesInput ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
-            }`} style={{ transitionDelay: showNamesInput ? '300ms' : '0ms' }}>
-              <div className="relative mb-4 flex justify-center">
-                <Input
-                  type="text"
-                  value={names}
-                  onValueChange={setNames}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && names.trim()) {
-                      handleNamesSubmit();
-                    }
-                  }}
-                  placeholder="e.g., Lorem, Ipsum, Dolor"
-                  variant="underlined"
-                  size="lg"
-                  className="w-80"
-                  autoFocus={showNamesInput}
-                  classNames={{
-                    input: "text-center text-lg text-neutral-50 placeholder:text-neutral-400",
-                    inputWrapper: "bg-transparent",
-                    innerWrapper: "bg-transparent",
-                    base: "bg-transparent"
-                  }}
-                />
+              {/* Names Input Field - Show when names input is active */}
+              <div className={`transition-all duration-500 ease-in-out ${getNamesInputAnimationClass()} ${
+                showNamesInput ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+              }`} style={{ transitionDelay: showNamesInput ? '300ms' : '0ms' }}>
+                <div className="flex justify-center mt-8">
+                  <input
+                    type="text"
+                    value={names}
+                    onChange={(e) => setNames(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && names.trim()) {
+                        handleNamesSubmit();
+                      }
+                    }}
+                    placeholder="Lorem, Ipsum, Dolor"
+                    className="w-80 text-center text-2xl text-neutral-50 placeholder:text-neutral-400 font-neue-haas bg-transparent border-b-2 border-neutral-400 focus:border-neutral-50 outline-none transition-all duration-300 px-4 py-3"
+                    style={{
+                      fontSize: '24px',
+                      letterSpacing: '-0.24px',
+                      lineHeight: '0',
+                      opacity: '0.7'
+                    }}
+                    autoFocus={showNamesInput}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -629,63 +778,53 @@ const Index = () => {
         <div className="absolute bottom-8 left-0 right-0 px-4">
           <div className="relative h-6 flex items-center justify-center w-full">
             {/* Text for initial screen */}
-            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
-              showInitialScreen 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-2 pointer-events-none'
-            }`}>
-              ENTER ↵ TO START
-            </p>
+            {showInitialScreen && (
+              <p className={`text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${getFooterAnimationClass()}`}>
+                ENTER ↵ TO START
+              </p>
+            )}
             
-            {/* Text for instructions screen */}
-            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
-              showInstructions 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-2 pointer-events-none'
-            }`} style={{ transitionDelay: showInstructions ? '600ms' : '0ms' }}>
-              ENTER ↵
-            </p>
+            {/* Text for agenda screen */}
+            {showAgenda && (
+              <p className={`text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${getFooterAnimationClass()}`} 
+                   style={{ transitionDelay: '300ms' }}>
+                ENTER ↵ TO START
+              </p>
+            )}
             
             {/* Text for names input state */}
-            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
-              showNamesInput 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-2 pointer-events-none'
-            }`} style={{ transitionDelay: showNamesInput ? '600ms' : '0ms' }}>
-              Write names separated by commas and hit ENTER ↵
-            </p>
+            {showNamesInput && (
+              <p className={`text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${getFooterAnimationClass()}`}
+                   style={{ transitionDelay: '600ms' }}>
+                Write names separated by commas and hit ENTER ↵
+              </p>
+            )}
             
             {/* Text for drawn cards state */}
-            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
-              drawnCards.length > 0 && !selectedCard && cards.length > 0
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-2 pointer-events-none'
-            }`}>
-              Tap on a card to redraw a new one ⌘ + R to restart
-            </p>
+            {drawnCards.length > 0 && !selectedCard && cards.length > 0 && (
+              <p className={`text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${getFooterAnimationClass()}`}>
+                Tap on a card to redraw a new one ⌘ + R to restart
+              </p>
+            )}
             
             {/* Text for when deck is empty */}
-            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
-              cards.length === 0 && drawnCards.length > 0
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-2 pointer-events-none'
-            }`}>
-              ⌘ + R to restart
-            </p>
+            {cards.length === 0 && drawnCards.length > 0 && (
+              <p className={`text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${getFooterAnimationClass()}`}>
+                ⌘ + R to restart
+              </p>
+            )}
             
             {/* Text for default shuffling state */}
-            <p className={`absolute text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${
-              !showInitialScreen && !showInstructions && !showNamesInput && drawnCards.length === 0 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-2 pointer-events-none'
-            }`}>
-              Drag Cards to Shuffle and tap on the deck to reveal
-            </p>
+            {!showInitialScreen && !showAgenda && !showNamesInput && drawnCards.length === 0 && namesSubmitted && cards.length > 0 && (
+              <p className={`text-neutral-400 text-base uppercase tracking-wide transition-all duration-500 ease-in-out text-center w-full ${getFooterAnimationClass()}`}>
+                Drag Cards to Shuffle and tap on the deck to reveal
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Image Trail Effect - Show on initial screen and shuffling screen (before cards are drawn) */}
-        {(showInitialScreen || (!showInstructions && !showNamesInput && namesSubmitted && !isDragging && drawnCards.length === 0)) && (
+        {/* Image Trail Effect - Show on initial screen, agenda screen, and shuffling screen (before cards are drawn) */}
+        {(showInitialScreen || showAgenda || (!showNamesInput && namesSubmitted && !isDragging && drawnCards.length === 0)) && (
           <ImageTrail 
             items={[
               '/lovable-uploads/image-trail/image-1.svg',
@@ -707,11 +846,13 @@ const Index = () => {
         )}
 
         {/* Card Stack - Positioned absolutely for better control */}
-        {cards.length > 0 && (
-          <div className={`absolute inset-0 flex items-center justify-center z-50 ${(drawnCards.length > 0 && !selectedCard) || showInstructions || showNamesInput ? 'pointer-events-none' : ''}`}>
+        {cards.length > 0 && !showAgenda && (
+          <div className={`absolute inset-0 flex items-center justify-center z-50 ${(drawnCards.length > 0 && !selectedCard) || showNamesInput ? 'pointer-events-none' : ''}`}>
             <div 
               className={`relative w-48 h-72 transition-transform duration-700 ease-in-out ${
-                showInitialScreen || showInstructions ? '-translate-y-[100vh]' : showNamesInput ? '-translate-y-[420px]' : deckPosition === 'top' ? '-translate-y-[320px]' : 'translate-y-0'
+                showInitialScreen || showAgenda ? '-translate-y-[100vh]' : 
+                shouldDeckSlideFromTop ? '-translate-y-[100vh]' :
+                deckPosition === 'top' ? '-translate-y-[380px]' : 'translate-y-0'
               }`}
             >
               <>
@@ -792,7 +933,7 @@ const Index = () => {
                 const animationProgress = isAnimating ? 0 : 1;
                 
                 // Start position: center (where deck is at the top)
-                const startY = -464; // Start at the exact top edge of the card stack (deck's -320px + half card height)
+                const startY = -524; // Start at the exact top edge of the card stack (deck's -380px + half card height)
                 const startX = 0; // All cards start at center (deck position)
                 const startScale = 1; // Start at normal size (no scaling)
                 const startRotation = 0; // Start with no rotation
@@ -843,7 +984,7 @@ const Index = () => {
                       <div className={`text-center mt-4 transition-all duration-500 ease-in-out ${
                         showParticipantNames ? 'opacity-100' : 'opacity-0'
                       }`}>
-                        <p className="text-neutral-50 text-lg font-black">
+                        <p className="text-neutral-50 text-xl font-denton" style={{ fontWeight: '100' }}>
                           {participantName}
                         </p>
                       </div>
