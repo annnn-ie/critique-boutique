@@ -77,13 +77,13 @@ export const Card: React.FC<CardProps> = ({
       >
         {/* Card Back */}
         <div 
-          className="absolute inset-0 w-full h-full rounded-2xl shadow-xl backface-hidden bg-neutral-50 p-2"
+          className="absolute inset-0 w-full h-full rounded-lg shadow-xl backface-hidden bg-neutral-50 p-2"
           style={{
             backfaceVisibility: 'hidden',
           }}
         >
           <div 
-            className="w-full h-full rounded-xl"
+            className="w-full h-full rounded-md"
             style={{
               backgroundImage: 'url(/lovable-uploads/card-back.png)',
               backgroundSize: 'cover',
@@ -94,14 +94,14 @@ export const Card: React.FC<CardProps> = ({
 
         {/* Card Front */}
         <div 
-          className="absolute inset-0 w-full h-full bg-neutral-50 rounded-2xl shadow-xl backface-hidden p-2"
+          className="absolute inset-0 w-full h-full bg-neutral-50 rounded-lg shadow-xl backface-hidden p-2"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
           }}
         >
           <div 
-            className="w-full h-full rounded-xl"
+            className="w-full h-full rounded-md"
             style={{
               backgroundImage: `url(${cardFrontImages[data.id]})`,
               backgroundSize: 'cover',
