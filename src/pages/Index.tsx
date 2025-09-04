@@ -709,8 +709,8 @@ const Index = () => {
                     letterSpacing: '0.4px',
                     fontWeight: '100'
                   }}>
-                    Feedback with style,<br />
-                    purpose, and heart.
+                    Participate with passion,<br />
+                    candor, and kindness..
                   </p>
                 )}
 
