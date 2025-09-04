@@ -58,8 +58,8 @@ export const HeroUICardComponent: React.FC<HeroUICardProps> = ({
         `}
         onClick={handleClick}
         style={{
-          width: '180px',
-          height: '256px',
+          width: '216px',
+          height: '307px',
           transformStyle: 'preserve-3d',
           transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
           transition: 'transform 1000ms cubic-bezier(0.4, 0.0, 0.2, 1)',
@@ -149,8 +149,8 @@ export const HeroUICardAlternative: React.FC<HeroUICardProps> = ({
         `}
         onClick={handleClick}
         style={{
-          width: '180px',
-          height: '256px',
+          width: '216px',
+          height: '307px',
           transformStyle: 'preserve-3d',
           transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
           transition: 'transform 1000ms cubic-bezier(0.4, 0.0, 0.2, 1)',

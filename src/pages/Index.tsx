@@ -705,7 +705,7 @@ const Index = () => {
                 {showInitialScreen && (
                   <p className="text-neutral-50 text-opacity-70 font-denton" style={{ 
                     fontSize: '40px', 
-                    lineHeight: '1.4', 
+                    lineHeight: '1.2', 
                     letterSpacing: '0.4px',
                     fontWeight: '100'
                   }}>
@@ -854,7 +854,7 @@ const Index = () => {
                 shouldDeckSlideFromTop ? '-translate-y-[100vh]' :
                 deckPosition === 'top' ? '-translate-y-[380px]' : 'translate-y-0'
               }`}
-              style={{ width: '180px', height: '256px' }}
+              style={{ width: '216px', height: '307px' }}
             >
               <>
                 {/* Stack Cards */}

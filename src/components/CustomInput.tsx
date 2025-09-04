@@ -38,7 +38,7 @@ export const CustomInput: React.FC<CustomInputProps> = ({
           width: 100%;
           padding: 12px 0;
           font-size: 24px;
-          line-height: 0;
+          line-height: 1.2;
           letter-spacing: -0.24px;
           text-align: center;
           color: rgb(250, 250, 250);
