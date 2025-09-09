@@ -692,7 +692,7 @@ const Index = () => {
                     fromFontVariationSettings="'wght' 900"
                     toFontVariationSettings="'wght' 100"
                     containerRef={containerRef}
-                    radius={150}
+                    radius={200}
                     falloff="gaussian"
                     className="block"
                   />
@@ -710,7 +710,7 @@ const Index = () => {
                     fontWeight: '100'
                   }}>
                     Participate with passion,<br />
-                    candor, and kindness..
+                    candor, and kindness.
                   </p>
                 )}
 
@@ -718,7 +718,7 @@ const Index = () => {
                 {showAgenda && (
                   <div className="text-neutral-50 text-opacity-70 font-denton" style={{ 
                     fontSize: '40px', 
-                    lineHeight: '1.4', 
+                    lineHeight: '1.6', 
                     letterSpacing: '0.4px',
                     fontWeight: '100'
                   }}>
@@ -734,7 +734,7 @@ const Index = () => {
                 {showNamesInput && (
                   <p className="text-neutral-50 text-opacity-70 font-denton" style={{ 
                     fontSize: '40px', 
-                    lineHeight: '1.4', 
+                    lineHeight: '1.2', 
                     letterSpacing: '0.4px',
                     fontWeight: '100'
                   }}>
@@ -838,7 +838,7 @@ const Index = () => {
             ]}
             variant={5}
             config={{
-              threshold: 80,        // Increased from 40 to 80 (bigger threshold)
+              threshold: 100,        // Increased from 80 to 100 (bigger threshold for larger cards)
               animationDuration: 0.8,  // Increased from 0.3 to 0.8 (stays longer)
               fadeOutDelay: 0.6       // Increased from 0.3 to 0.6 (fades out later)
             }}
@@ -852,9 +852,9 @@ const Index = () => {
               className={`relative transition-transform duration-700 ease-in-out ${
                 showInitialScreen || showAgenda ? '-translate-y-[100vh]' : 
                 shouldDeckSlideFromTop ? '-translate-y-[100vh]' :
-                deckPosition === 'top' ? '-translate-y-[380px]' : 'translate-y-0'
+                deckPosition === 'top' ? '-translate-y-[480px]' : 'translate-y-0'
               }`}
-              style={{ width: '216px', height: '307px' }}
+              style={{ width: '280px', height: '400px' }}
             >
               <>
                 {/* Stack Cards */}
@@ -914,7 +914,7 @@ const Index = () => {
         {drawnCards.length > 0 && !selectedCard && showDrawnCards && (
           <div className={`absolute inset-0 flex flex-col items-center justify-center z-30 transition-all duration-1000 ease-in-out ${
             isDrawingCards ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'
-          }`} style={{ paddingTop: '100px', pointerEvents: 'auto' }}>
+          }`} style={{ paddingTop: '80px', pointerEvents: 'auto' }}>
             {/* Empty state message - positioned absolutely to avoid layout shifts */}
             {cards.length === 0 && (
               <div className={`absolute top-56 left-1/2 transform -translate-x-1/2 text-neutral-50 text-center transition-all duration-300 ease-out ${
@@ -923,7 +923,7 @@ const Index = () => {
                 <p className="font-denton" style={{ fontSize: '24px', lineHeight: '1.0' }}>No more cards available</p>
               </div>
             )}
-            <div className="relative mb-8" style={{ width: '100%', height: '200px', pointerEvents: 'auto' }}>
+            <div className="relative mb-8" style={{ width: '100%', height: '300px', pointerEvents: 'auto' }}>
               {drawnCards.map((card, index) => {
                 const namesArray = names.split(',').map(name => name.trim()).filter(name => name.length > 0);
                 const participantName = namesArray[index] || `Participant ${index + 1}`;
@@ -934,14 +934,14 @@ const Index = () => {
                 const animationProgress = isAnimating ? 0 : 1;
                 
                 // Start position: center (where deck is at the top)
-                const startY = -508; // Start at the exact top edge of the card stack (deck's -380px + half card height: 256/2 = 128)
+                const startY = -580; // Start at the exact top edge of the card stack (deck's -480px + half card height: 400/2 = 200)
                 const startX = 0; // All cards start at center (deck position)
                 const startScale = 1; // Start at normal size (no scaling)
                 const startRotation = 0; // Start with no rotation
                 
                 // Final position: spread out horizontally from center, at display level
-                const finalY = 0; // Final display position
-                const finalX = (index - (drawnCards.length - 1) / 2) * 220; // Spread horizontally with 220px gaps (adjusted for new card width)
+                const finalY = -50; // Final display position (moved higher up)
+                const finalX = (index - (drawnCards.length - 1) / 2) * 340; // Spread horizontally with 380px gaps (increased spacing)
                 const finalScale = 1; // End at normal size (no scaling)
                 const finalRotation = 0;
                 
@@ -982,7 +982,7 @@ const Index = () => {
                         isDragging={false}
                       />
                       {/* Participant name underneath each card */}
-                      <div className={`text-center mt-4 transition-all duration-500 ease-in-out ${
+                      <div className={`text-center mt-6 transition-all duration-500 ease-in-out ${
                         showParticipantNames ? 'opacity-100' : 'opacity-0'
                       }`}>
                         <p className="text-neutral-50 text-xl font-denton" style={{ fontWeight: '100' }}>

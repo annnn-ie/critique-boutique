@@ -20,7 +20,7 @@ const cardFrontImages: Record<number, string> = {
   5: '/lovable-uploads/content-strategist.png',
   6: '/lovable-uploads/lead-designer.png',
   7: '/lovable-uploads/motion-designer.png',
-  8: '/lovable-uploads/design-system-advocate.png',
+  8: '/lovable-uploads/design-systems-advocate.png',
   9: '/lovable-uploads/information-architect.png',
   10: '/lovable-uploads/accessibility-expert.png',
 };
@@ -50,16 +50,13 @@ export const Card: React.FC<CardProps> = ({
     <div className="relative perspective-1000" style={{ zIndex: 1 }}>
       <div
         className={`
-          relative transition-all duration-1000 cursor-pointer
+          relative cursor-pointer shadow-xl
           ${isFlipped ? 'transform-style-preserve-3d rotate-y-180' : 'transform-style-preserve-3d'}
-          ${!disabled && !isStacked ? 'hover:scale-105 hover:-translate-y-2 hover:shadow-2xl' : ''}
           ${disabled && !isDragging ? 'cursor-not-allowed' : ''}
           ${isDragging ? 'cursor-grabbing' : ''}
         `}
         onClick={handleClick}
         style={{
-          width: '216px',
-          height: '307px',
           transformStyle: 'preserve-3d',
           transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
           transition: 'transform 1000ms cubic-bezier(0.4, 0.0, 0.2, 1)',
@@ -67,49 +64,47 @@ export const Card: React.FC<CardProps> = ({
           zIndex: 1,
         }}
         onMouseEnter={(e) => {
-          if (!disabled && !isStacked) {
-            e.currentTarget.style.transform = `${isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'} rotate(${hoverRotation}deg)`;
+          if (!disabled && !isStacked && !isDragging) {
+            e.currentTarget.style.transform = `${isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'} rotate(${hoverRotation}deg) scale(1.05) translateY(-8px)`;
           }
         }}
         onMouseLeave={(e) => {
-          if (!disabled && !isStacked) {
+          if (!disabled && !isStacked && !isDragging) {
             e.currentTarget.style.transform = `${isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}`;
           }
         }}
       >
         {/* Card Back */}
         <div 
-          className="absolute inset-0 w-full h-full rounded-lg shadow-xl backface-hidden bg-neutral-50"
-          style={{
-            backfaceVisibility: 'hidden',
-            padding: '1px',
-          }}
+          className="relative rounded-2xl backface-hidden border"
+          style={{ borderColor: '#EFEFF0' }}
         >
-          <div 
-            className="w-full h-full rounded-md"
+          <img
+            src="/lovable-uploads/card-back.png"
+            alt="Card back"
+            className="block"
             style={{
-              backgroundImage: 'url(/lovable-uploads/card-back.png)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              maxWidth: '280px',
+              maxHeight: '400px',
             }}
           />
         </div>
 
         {/* Card Front */}
         <div 
-          className="absolute inset-0 w-full h-full bg-neutral-50 rounded-lg shadow-xl backface-hidden"
+          className="absolute inset-0 rounded-2xl backface-hidden border"
           style={{
-            backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            padding: '1px',
+            borderColor: '#EFEFF0',
           }}
         >
-          <div 
-            className="w-full h-full rounded-md"
+          <img
+            src={cardFrontImages[data.id]}
+            alt={`${data.name.title} card`}
+            className="block"
             style={{
-              backgroundImage: `url(${cardFrontImages[data.id]})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              maxWidth: '280px',
+              maxHeight: '400px',
             }}
           />
         </div>
