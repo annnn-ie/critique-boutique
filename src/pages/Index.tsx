@@ -758,7 +758,7 @@ const Index = () => {
                         handleNamesSubmit();
                       }
                     }}
-                    placeholder="Lorem, Ipsum, Dolor"
+                    placeholder="Helvetica, Futura, Garamond"
                     className="w-80 text-center text-2xl text-neutral-50 placeholder:text-neutral-400 font-neue-haas bg-transparent border-b-2 border-neutral-400 focus:border-neutral-50 outline-none transition-all duration-300 px-4 py-3"
                     style={{
                       fontSize: '24px',

@@ -76,8 +76,7 @@ export const Card: React.FC<CardProps> = ({
       >
         {/* Card Back */}
         <div 
-          className="relative rounded-2xl backface-hidden border"
-          style={{ borderColor: '#EFEFF0' }}
+          className="relative backface-hidden"
         >
           <img
             src="/lovable-uploads/card-back.png"
@@ -92,10 +91,9 @@ export const Card: React.FC<CardProps> = ({
 
         {/* Card Front */}
         <div 
-          className="absolute inset-0 rounded-2xl backface-hidden border"
+          className="absolute inset-0 backface-hidden"
           style={{
             transform: 'rotateY(180deg)',
-            borderColor: '#EFEFF0',
           }}
         >
           <img
