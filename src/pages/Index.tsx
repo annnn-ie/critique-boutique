@@ -664,16 +664,16 @@ const Index = () => {
       <main className="relative z-10 min-h-screen" ref={containerRef}>
         {/* Title and Interactive Elements Container */}
         <div className="absolute top-0 left-0 right-0 z-20" style={{ 
-          paddingTop: showInitialScreen ? '348px' : '388px'
+          paddingTop: showInitialScreen ? '40vh' : '42vh'
         }}>
           <div className="w-full max-w-4xl mx-auto text-center">
             {/* Title Section */}
-            <div className="transition-all duration-1000 ease-in-out" style={{ height: '80px' }}>
+            <div className="transition-all duration-1000 ease-in-out" style={{ height: '5rem' }}>
               <h1 className={`font-black text-neutral-50 tracking-tight font-neue-haas ${getTitleAnimationClass()} ${showAgenda ? 'no-scale-transform' : ''}`} style={{ 
-                fontSize: showAgenda ? '80px' : showNamesInput ? '80px' : showInitialScreen ? '120px' : '0px', 
+                fontSize: showAgenda ? '5rem' : showNamesInput ? '5rem' : showInitialScreen ? '7.5rem' : '0px', 
                 lineHeight: '0',
                 letterSpacing: showAgenda ? '-0.8px' : showNamesInput ? '-0.8px' : '0px',
-                marginBottom: showInitialScreen ? '10px' : '60px',
+                marginBottom: showInitialScreen ? '0.625rem' : '3.75rem',
                 opacity: showInitialScreen || showAgenda || showNamesInput ? '1' : '0'
               }}>
                 {showAgenda ? (
@@ -704,7 +704,7 @@ const Index = () => {
                 {/* Initial screen subtitle */}
                 {showInitialScreen && (
                   <p className="text-neutral-50 text-opacity-70 font-denton" style={{ 
-                    fontSize: '40px', 
+                    fontSize: '2.5rem', 
                     lineHeight: '1.2', 
                     letterSpacing: '0.4px',
                     fontWeight: '100'
@@ -717,7 +717,7 @@ const Index = () => {
                 {/* Agenda screen agenda */}
                 {showAgenda && (
                   <div className="text-neutral-50 text-opacity-70 font-denton" style={{ 
-                    fontSize: '40px', 
+                    fontSize: '2.5rem', 
                     lineHeight: '1.6', 
                     letterSpacing: '0.4px',
                     fontWeight: '100'
@@ -733,7 +733,7 @@ const Index = () => {
                 {/* Names input subtitle */}
                 {showNamesInput && (
                   <p className="text-neutral-50 text-opacity-70 font-denton" style={{ 
-                    fontSize: '40px', 
+                    fontSize: '2.5rem', 
                     lineHeight: '1.2', 
                     letterSpacing: '0.4px',
                     fontWeight: '100'
@@ -758,10 +758,10 @@ const Index = () => {
                         handleNamesSubmit();
                       }
                     }}
-                    placeholder="Helvetica, Futura, Garamond"
+                    placeholder="Dagobah, Endor, Tatooine"
                     className="w-80 text-center text-2xl text-neutral-50 placeholder:text-neutral-400 font-neue-haas bg-transparent border-b-2 border-neutral-400 focus:border-neutral-50 outline-none transition-all duration-300 px-4 py-3"
                     style={{
-                      fontSize: '24px',
+                      fontSize: '1.5rem',
                       letterSpacing: '-0.24px',
                       lineHeight: '0',
                       opacity: '0.7'
@@ -852,9 +852,9 @@ const Index = () => {
               className={`relative transition-transform duration-700 ease-in-out ${
                 showInitialScreen || showAgenda ? '-translate-y-[100vh]' : 
                 shouldDeckSlideFromTop ? '-translate-y-[100vh]' :
-                deckPosition === 'top' ? '-translate-y-[480px]' : 'translate-y-0'
+                deckPosition === 'top' ? '-translate-y-[45vh]' : 'translate-y-0'
               }`}
-              style={{ width: '280px', height: '400px' }}
+              style={{ width: '17.5rem', height: '25rem' }}
             >
               <>
                 {/* Stack Cards */}
@@ -914,16 +914,16 @@ const Index = () => {
         {drawnCards.length > 0 && !selectedCard && showDrawnCards && (
           <div className={`absolute inset-0 flex flex-col items-center justify-center z-30 transition-all duration-1000 ease-in-out ${
             isDrawingCards ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'
-          }`} style={{ paddingTop: '80px', pointerEvents: 'auto' }}>
+          }`} style={{ paddingTop: '5vh', pointerEvents: 'auto' }}>
             {/* Empty state message - positioned absolutely to avoid layout shifts */}
             {cards.length === 0 && (
-              <div className={`absolute top-56 left-1/2 transform -translate-x-1/2 text-neutral-50 text-center transition-all duration-300 ease-out ${
+              <div className={`absolute top-[14rem] left-1/2 transform -translate-x-1/2 text-neutral-50 text-center transition-all duration-300 ease-out ${
                 showEmptyState ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0.5'
               }`}>
-                <p className="font-denton" style={{ fontSize: '24px', lineHeight: '1.0' }}>No more cards available</p>
+                <p className="font-denton" style={{ fontSize: '1.5rem', lineHeight: '1.0' }}>No more cards available</p>
               </div>
             )}
-            <div className="relative mb-8" style={{ width: '100%', height: '300px', pointerEvents: 'auto' }}>
+            <div className="relative mb-8" style={{ width: '100%', height: '18.75rem', pointerEvents: 'auto' }}>
               {drawnCards.map((card, index) => {
                 const namesArray = names.split(',').map(name => name.trim()).filter(name => name.length > 0);
                 const participantName = namesArray[index] || `Participant ${index + 1}`;
@@ -934,14 +934,16 @@ const Index = () => {
                 const animationProgress = isAnimating ? 0 : 1;
                 
                 // Start position: center (where deck is at the top)
-                const startY = -580; // Start at the exact top edge of the card stack (deck's -480px + half card height: 400/2 = 200)
+                const startY = -37; // Start at the exact top edge of the card stack (deck's -45vh + half card height: 25rem/2 = 12.5rem ≈ 7.8vh = -37vh)
                 const startX = 0; // All cards start at center (deck position)
                 const startScale = 1; // Start at normal size (no scaling)
                 const startRotation = 0; // Start with no rotation
                 
                 // Final position: spread out horizontally from center, at display level
-                const finalY = -50; // Final display position (moved higher up)
-                const finalX = (index - (drawnCards.length - 1) / 2) * 340; // Spread horizontally with 380px gaps (increased spacing)
+                const finalY = -3; // Final display position (moved higher up)
+                // Calculate responsive spacing based on number of cards and screen size
+                const baseSpacing = drawnCards.length <= 2 ? 30 : drawnCards.length <= 3 ? 25 : 20;
+                const finalX = (index - (drawnCards.length - 1) / 2) * baseSpacing; // Spread horizontally with responsive gaps
                 const finalScale = 1; // End at normal size (no scaling)
                 const finalRotation = 0;
                 
@@ -956,8 +958,8 @@ const Index = () => {
                     key={`${card.id}-${index}`}
                     className="absolute top-0 flex flex-col items-center"
                     style={{ 
-                      left: `calc(50% + ${currentX}px)`,
-                      transform: `translateX(-50%) translateY(${currentY}px) scale(${currentScale}) rotate(${currentRotation}deg)`,
+                      left: `calc(50% + ${currentX}vw)`,
+                      transform: `translateX(-50%) translateY(${currentY}vh) scale(${currentScale}) rotate(${currentRotation}deg)`,
                       pointerEvents: 'auto',
                       zIndex: 100 + index, // Ensure each card has a unique z-index
                       transitionDelay: `${cardDelay}ms`,

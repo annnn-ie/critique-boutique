@@ -661,44 +661,40 @@ export default function ImageTrail({
       
       // Override showNextImage method to use custom timing
       showNextImage() {
-        // Call parent method first
-        super.showNextImage();
+        ++this.zIndexVal;
+        this.imgPosition = this.imgPosition < this.imagesTotal - 1 ? this.imgPosition + 1 : 0;
+        const img = this.images[this.imgPosition];
+
+        if (!img.rect) return;
+
+        gsap.killTweensOf(img.DOM.el);
         
-        // Then customize the timing if custom values are provided
-        if (this.customAnimationDuration || this.customFadeOutDelay) {
-          const img = this.images[this.imgPosition];
-          if (!img || !img.rect) return;
-          
-          // Kill existing tweens and recreate with custom timing
-          gsap.killTweensOf(img.DOM.el);
-          
-          const duration = this.customAnimationDuration || 0.3;
-          const fadeOutDelay = this.customFadeOutDelay || 0.3;
-          
-          gsap.timeline({
-            onStart: () => this.onImageActivated(),
-            onComplete: () => this.onImageDeactivated()
-          })
-            .fromTo(img.DOM.el, {
-              opacity: 1,
-              scale: 0.8,
-              zIndex: this.zIndexVal,
-              x: this.cacheMousePos.x - img.rect.width / 2,
-              y: this.cacheMousePos.y - img.rect.height / 2
-            }, {
-              duration: duration,
-              ease: 'power1',
-              scale: 1,
-              x: this.mousePos.x - img.rect.width / 2,
-              y: this.mousePos.y - img.rect.height / 2
-            }, 0)
-            .to(img.DOM.el, {
-              duration: duration,
-              ease: 'power3',
-              opacity: 0,
-              scale: 0.2
-            }, fadeOutDelay);
-        }
+        const duration = this.customAnimationDuration || 0.3;
+        const fadeOutDelay = this.customFadeOutDelay || 0.3;
+        
+        gsap.timeline({
+          onStart: () => this.onImageActivated(),
+          onComplete: () => this.onImageDeactivated()
+        })
+          .fromTo(img.DOM.el, {
+            opacity: 1,
+            scale: 0.8,
+            zIndex: this.zIndexVal,
+            x: this.cacheMousePos.x - img.rect.width / 2,
+            y: this.cacheMousePos.y - img.rect.height / 2
+          }, {
+            duration: duration,
+            ease: 'power1',
+            scale: 1,
+            x: this.mousePos.x - img.rect.width / 2,
+            y: this.mousePos.y - img.rect.height / 2
+          }, 0)
+          .to(img.DOM.el, {
+            duration: duration,
+            ease: 'power3',
+            opacity: 0,
+            scale: 0.2
+          }, fadeOutDelay);
       }
     }
     
